@@ -22,3 +22,5 @@ demo/raw/
 .cache/
 *.tsbuildinfo
 next-env.d.ts
+# runtime database — contains pairs and answers; never committed
+data/
