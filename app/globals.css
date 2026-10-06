@@ -1,0 +1,77 @@
+@import "tailwindcss";
+@import "../src/styles/tokens.css";
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-prose);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    /* One column, about 34rem. The whole app lives here. */
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 6rem;
+  }
+
+  /* Numbers and hashes are evidence, not prose: always quieter than the sentence. */
+  .measure {
+    font-family: var(--font-measure);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  textarea,
+  input {
+    font: inherit;
+    color: inherit;
+  }
+
+  textarea {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-hairline);
+    border-radius: 0;
+    resize: none;
+    width: 100%;
+    padding: 0.75rem 0;
+    line-height: 1.65;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-bottom-color: var(--color-accent);
+  }
+
+  button {
+    font: inherit;
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

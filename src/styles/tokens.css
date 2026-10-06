@@ -1,0 +1,27 @@
+/**
+ * Four colours and two typefaces. Nothing else.
+ *
+ * The idea this file exists to express: the human voice is typeset like a letter, and the
+ * machine's judgments are typeset like evidence. One serif carries every sentence — the
+ * words belong to the people. One mono carries every number and hash — they belong to the
+ * measurement. Same page, two registers, and the division of labour is visible without a
+ * word of explanation.
+ *
+ * Borders are avoided on purpose. Separation comes from space and a single hairline.
+ */
+
+@theme {
+  /* Warm paper, never pure white. */
+  --color-paper: #f8f5ef;
+  /* Very dark warm brown-black. */
+  --color-ink: #1e1a16;
+  /* Warm grey for the mono labels and secondary text. */
+  --color-muted: #8a8175;
+  /* One warm ochre, reserved for movements that concern both people. */
+  --color-accent: #a96b33;
+  /* The only border colour in the app. */
+  --color-hairline: #e4ded3;
+
+  --font-prose: var(--font-source-serif), Georgia, serif;
+  --font-measure: var(--font-plex-mono), ui-monospace, monospace;
+}

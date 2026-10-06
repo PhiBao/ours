@@ -22,7 +22,7 @@ feedback, and both are kept.
   Learner check: Run `pnpm seed` yourself. Read the printed page and the two contrasting calibration results in the script's output, and say whether the sentences feel like something you'd be willing to show two people.
   Commit: `Prove measurements and sentence composition on a real pair`
 
-- [ ] **2. Two people can get in, answer, seal, and wait**
+- [x] **2. Two people can get in, answer, seal, and wait**
   Becomes usable: Two browsers can join the same code, each answer six prompts alone, see their own commitment hash, and land on a waiting screen showing one card sealed and one not.
   Why now: The whole entry half of the loop, end to end and usable, before any of it depends on a model being reachable. Also proves the data model and the local-copy mechanism the privacy claim rests on.
   PRD ref: `prd.md > Arriving and joining`, `prd.md > Answering alone`, `prd.md > The seal`, `prd.md > Waiting`
@@ -90,6 +90,12 @@ Activity mode:
   absent afterwards. `node:sqlite` is part of Node 22, so `pnpm install` now needs no
   compilation at all, which is a better outcome for anyone cloning the repo to run it.
   Same file-backed storage, same three tables, same deletion transaction.
+- **Drafts were being rejected because the server required all six answers before saving.**
+  Drafts save on every keystroke, so they arrive at whatever length the person has reached;
+  the handler now pads to six and only demands a complete set at seal time.
+- **Joining a pair never inserted the person.** `createPair` created the pair row and
+  nothing wrote the person, so the second stage of the flow answered 403 for everyone. The
+  end-to-end check caught it immediately, which is what it is for.
 - **Pair questions are now asked in one combined request, and `both_feel_unseen` dropped
   from 0.88 to 0.70 on the target pair** — batching the three pair questions diluted the
   context. It still clears the 0.65 threshold, but by 0.05 rather than 0.23. Recorded
