@@ -17,3 +17,8 @@ demo/raw/
 
 # OS
 .DS_Store
+.cache/
+# measurement response cache — regenerated, never committed
+.cache/
+*.tsbuildinfo
+next-env.d.ts
