@@ -1,0 +1,19 @@
+# Devpost Learn: personal learning context stays out of commits by default.
+# NOTE: this keeps it out of git history, NOT out of your AI provider's conversation.
+/devpost/learner-profile.md
+
+# Local credentials — never commit.
+.env
+.env.*
+!.env.example
+
+# build output
+node_modules/
+.next/
+dist/
+
+# demo capture artifacts (regenerated, large)
+demo/raw/
+
+# OS
+.DS_Store
