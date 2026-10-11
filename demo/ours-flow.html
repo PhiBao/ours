@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neither of them goes first</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      /* Ours' own tokens, from src/styles/tokens.css. The two registers are
+         load-bearing here too: ink serif for what a person said, ochre mono
+         for what the machine measured. */
+      --paper:    #f8f5ef;
+      --ink:      #1e1a16;
+      --muted:    #8a8175;
+      --ochre:    #a96b33;
+      --hairline: #e4ded3;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1000px; width: 100%; }
+    /* min-width == the readable width, so the type ramp is never silently
+       scaled down; the wrapper scrolls the diagram instead of the page. */
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow {
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 820px; display: block; }
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">How the page gets built</p>
+    <h1>Neither of them goes first.</h1>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ours-flow-title ours-flow-desc">
+        <title id="ours-flow-title">Neither of them goes first</title>
+        <desc id="ours-flow-desc">Maya and Sam each answer six questions alone and seal them; the shared page does not exist until both have sealed, then appears for both at once, with both sets of words deleted in the same transaction that stores it.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#8a8175"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#a96b33"/></marker>
+        </defs>
+
+        <!-- Lifelines: Maya x=180, Sam x=480, page x=800. Dashed, time flows down. -->
+        <line x1="180" y1="96" x2="180" y2="560" stroke="#e4ded3" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="480" y1="96" x2="480" y2="560" stroke="#e4ded3" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="800" y1="96" x2="800" y2="560" stroke="#e4ded3" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- Actor heads. Opaque paper mask first, then the hairline box. -->
+        <g>
+          <rect x="100" y="40" width="160" height="56" rx="6" fill="#f8f5ef"/>
+          <rect x="100" y="40" width="160" height="56" rx="6" fill="#f8f5ef" stroke="#e4ded3" stroke-width="1"/>
+          <text x="180" y="66" fill="#1e1a16" font-size="14" font-weight="600" font-family="'Inter', sans-serif" text-anchor="middle">Maya</text>
+          <text x="180" y="82" fill="#8a8175" font-size="10" font-family="'IBM Plex Mono', monospace" text-anchor="middle">her browser</text>
+
+          <rect x="400" y="40" width="160" height="56" rx="6" fill="#f8f5ef"/>
+          <rect x="400" y="40" width="160" height="56" rx="6" fill="#f8f5ef" stroke="#e4ded3" stroke-width="1"/>
+          <text x="480" y="66" fill="#1e1a16" font-size="14" font-weight="600" font-family="'Inter', sans-serif" text-anchor="middle">Sam</text>
+          <text x="480" y="82" fill="#8a8175" font-size="10" font-family="'IBM Plex Mono', monospace" text-anchor="middle">his browser</text>
+
+          <rect x="700" y="40" width="200" height="56" rx="6" fill="#f8f5ef"/>
+          <rect x="700" y="40" width="200" height="56" rx="6" fill="#f8f5ef" stroke="#e4ded3" stroke-width="1"/>
+          <text x="800" y="66" fill="#1e1a16" font-size="14" font-weight="600" font-family="'Inter', sans-serif" text-anchor="middle">The page</text>
+          <text x="800" y="82" fill="#8a8175" font-size="10" font-family="'IBM Plex Mono', monospace" text-anchor="middle">nothing to see yet</text>
+        </g>
+
+        <!--
+          Arrows before masks, so no stroke bleeds through a label.
+          The two ochre returns leave the page lifeline 50px apart (rule 4) and sit
+          on different rows, so they never overlap (rule 3). Every one is perfectly
+          horizontal (rule 1). Returns are dashed with a filled head.
+        -->
+        <g fill="none" stroke-width="1.2">
+          <line x1="184" y1="180" x2="796" y2="180" stroke="#8a8175" marker-end="url(#arrow)"/>
+          <line x1="484" y1="240" x2="796" y2="240" stroke="#8a8175" marker-end="url(#arrow)"/>
+          <line x1="796" y1="440" x2="484" y2="440" stroke="#a96b33" stroke-dasharray="5,4" marker-end="url(#arrow-accent)"/>
+          <line x1="796" y1="490" x2="184" y2="490" stroke="#a96b33" stroke-dasharray="5,4" marker-end="url(#arrow-accent)"/>
+        </g>
+
+        <!-- The page stops being a hypothetical here. -->
+        <circle cx="800" cy="415" r="5" fill="#a96b33"/>
+        <circle cx="800" cy="415" r="11" fill="none" stroke="#a96b33" stroke-width="1" opacity="0.35"/>
+
+        <!--
+          Arrow labels: opaque paper mask, 10px gap above the stroke, and placed
+          at x=640 so the mask never crosses the Sam lifeline at x=480.
+        -->
+        <g font-family="'IBM Plex Mono', monospace" font-size="9" fill="#8a8175" letter-spacing="0.06em">
+          <rect x="570" y="154" width="140" height="16" rx="2" fill="#f8f5ef"/>
+          <text x="640" y="166" text-anchor="middle">SIX, SEALED</text>
+
+          <rect x="570" y="214" width="140" height="16" rx="2" fill="#f8f5ef"/>
+          <text x="640" y="226" text-anchor="middle">SIX, SEALED</text>
+
+          <rect x="590" y="414" width="100" height="16" rx="2" fill="#f8f5ef"/>
+          <text x="640" y="426" text-anchor="middle" fill="#a96b33">THE PAGE</text>
+
+          <rect x="570" y="464" width="140" height="16" rx="2" fill="#f8f5ef"/>
+          <text x="640" y="476" text-anchor="middle" fill="#a96b33">SAME PAGE</text>
+        </g>
+
+        <!--
+          The barrier, drawn as a fragment: the one thing this diagram exists to
+          say. Frame insets 40px from the outermost lifines, so the bars stay clear.
+        -->
+        <g>
+          <rect x="140" y="288" width="700" height="112" rx="4"
+                fill="rgba(30,26,22,0.02)" stroke="rgba(30,26,22,0.22)" stroke-width="1"/>
+          <rect x="140" y="288" width="44" height="16" rx="2"
+                fill="#f8f5ef" stroke="rgba(30,26,22,0.22)" stroke-width="1"/>
+          <text x="162" y="300" fill="#8a8175" font-size="8"
+                font-family="'IBM Plex Mono', monospace" text-anchor="middle"
+                letter-spacing="0.12em">OPT</text>
+          <text x="150" y="324" fill="#8a8175" font-size="8"
+                font-family="'IBM Plex Mono', monospace" letter-spacing="0.04em">[both sealed]</text>
+
+          <rect x="380" y="342" width="220" height="18" rx="2" fill="#f8f5ef"/>
+          <text x="490" y="355" fill="#1e1a16" font-size="12"
+                font-family="'Instrument Serif', Georgia, serif" font-style="italic"
+                text-anchor="middle">it does not exist yet</text>
+          <text x="490" y="380" fill="#8a8175" font-size="9"
+                font-family="'IBM Plex Mono', monospace" text-anchor="middle"
+                letter-spacing="0.06em">AND NEITHER CAN HURRY IT</text>
+        </g>
+
+        <!--
+          One annotation, in the bottom margin, italic serif against the mono body.
+          The leader lands on the page lifeline below the reveal and crosses no
+          arrow and no other lifeline.
+        -->
+        <g>
+          <path d="M 430 578 Q 640 566 800 508" fill="none"
+                stroke="rgba(30,26,22,0.40)" stroke-width="1" stroke-dasharray="4,3"/>
+          <circle cx="800" cy="508" r="2" fill="#1e1a16"/>
+          <text x="180" y="584" fill="#1e1a16" font-size="16" font-style="italic"
+                font-family="'Instrument Serif', Georgia, serif">both sets of words deleted</text>
+          <text x="180" y="602" fill="#8a8175" font-size="10"
+                font-family="'IBM Plex Mono', monospace" letter-spacing="0.04em">in the transaction that stores the page</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

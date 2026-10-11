@@ -10,6 +10,8 @@ Ours is a two-person app. Each partner answers six open questions **alone**, in 
 words. The page does not exist until both have answered. Then they open the same page, and
 it tells them what they are actually disagreeing about.
 
+![How the page gets built](demo/ours-flow.png)
+
 > *You're both carrying it alone.*
 > *Neither of you has said that out loud. You each think you're the one holding it.*
 
