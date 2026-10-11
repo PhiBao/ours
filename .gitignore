@@ -24,3 +24,5 @@ demo/raw/
 next-env.d.ts
 # runtime database — contains pairs and answers; never committed
 data/
+# scratch frames from video inspection
+demo/frames/

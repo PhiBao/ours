@@ -133,7 +133,7 @@ export function Reveal({ code, name }: { code: string; name: string }) {
     <main className="reveal">
       <div className="flex items-baseline justify-between">
         <p className="measure">{name.toUpperCase()}</p>
-        <p className="measure">BOTH OF YOU · {shown.length} FOUND</p>
+        <p className="measure">BOTH OF YOU · {shown.length > 0 ? "WHAT WE FOUND" : "NOTHING WE COULD STAND BEHIND"}</p>
       </div>
 
       <header

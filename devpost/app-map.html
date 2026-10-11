@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ours — app map</title>
+<style>
+  :root{
+    --paper:#f8f5ef; --ink:#1e1a16; --muted:#8a8175; --accent:#a96b33; --hairline:#e4ded3;
+    --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);
+       font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:56rem;margin:0 auto;padding:3.5rem 1.5rem 6rem}
+  h1{font-size:2.6rem;font-weight:300;line-height:1.05;margin:0 0 .4rem;letter-spacing:-.01em}
+  .lede{font-size:1.3rem;font-weight:300;color:var(--ink);margin:1.2rem 0 0;max-width:34rem}
+  .m{font-family:var(--mono);font-size:.6875rem;letter-spacing:.07em;color:var(--accent);
+     text-transform:uppercase}
+  .muted{font-family:var(--mono);font-size:.6875rem;letter-spacing:.07em;color:var(--muted);
+     text-transform:uppercase}
+  hr{border:0;border-top:1px solid var(--hairline);margin:2.5rem 0}
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;font-weight:400;margin:0 0 .5rem}
+  p{max-width:42rem}
+  code{font-family:var(--mono);font-size:.82em;background:color-mix(in srgb,var(--accent) 8%,transparent);
+       padding:.1em .35em;border-radius:2px}
+  ol,ul{max-width:42rem;padding-left:1.2rem}
+  li{margin:.5rem 0}
+  /* the loop */
+  .loop{display:grid;gap:.5rem;margin:1.5rem 0 0}
+  .step{display:grid;grid-template-columns:2.2rem 1fr;gap:1rem;align-items:start;
+        padding:.9rem 0;border-top:1px solid var(--hairline)}
+  .step .n{font-family:var(--mono);font-size:.75rem;color:var(--accent);padding-top:.35rem}
+  .step .t{font-size:1.05rem}
+  .step .f{font-family:var(--mono);font-size:.6875rem;color:var(--muted);letter-spacing:.04em;margin-top:.25rem}
+  /* files */
+  table{width:100%;border-collapse:collapse;font-size:.95rem;margin-top:1rem}
+  th,td{text-align:left;padding:.55rem .6rem;border-top:1px solid var(--hairline);vertical-align:top}
+  th{font-family:var(--mono);font-size:.625rem;letter-spacing:.09em;color:var(--muted);
+     text-transform:uppercase;font-weight:400}
+  td.f{font-family:var(--mono);font-size:.75rem;color:var(--accent);white-space:nowrap}
+  td.d{color:var(--ink/80);font-size:.95rem}
+  .note{border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1.2rem;margin:1.5rem 0;max-width:42rem}
+  .note p{margin:0}
+  .grid{display:grid;gap:1.5rem;grid-template-columns:1fr}
+  @media(min-width:52rem){.grid{grid-template-columns:1fr 1fr;gap:2.5rem}}
+  .badge{display:inline-block;font-family:var(--mono);font-size:.625rem;letter-spacing:.08em;
+         text-transform:uppercase;border:1px solid var(--hairline);padding:.15rem .5rem;
+         border-radius:2px;color:var(--muted);margin:0 .35rem .35rem 0}
+  footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--hairline);
+         font-family:var(--mono);font-size:.625rem;letter-spacing:.07em;color:var(--muted);
+         text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="m">Take-home guide</p>
+  <h1>Ours</h1>
+  <p class="lede">Two people who share money each answer six open questions alone, then open the same page. Everything below is a pointer into the real code, so you can find any behaviour you see on screen.</p>
+
+  <hr>
+
+  <section>
+    <p class="m">The one idea worth remembering</p>
+    <h2>Nobody goes first</h2>
+    <p>Every product in shared finances answers an information problem but asks you to solve a trust problem first: someone has to link accounts or open up, and going first feels like conceding, so it never happens. Both people argue from partial pictures forever.</p>
+    <p>Ours inverts that. The reveal does not exist until both people are sealed in, and neither ever sees the other's words.</p>
+  </section>
+
+  <section>
+    <p class="m">The loop, end to end</p>
+    <h2>Where each moment lives</h2>
+    <div class="loop">
+      <div class="step"><span class="n">01</span><span><span class="t">Join, or start a pair</span>
+        <span class="f">app/page.tsx · app/api/pair/route.ts</span></span></div>
+      <div class="step"><span class="n">02</span><span><span class="t">Six prompts, one at a time</span>
+        <span class="f">app/answer/[code]/answer-client.tsx · src/lib/questions.ts</span></span></div>
+      <div class="step"><span class="n">03</span><span><span class="t">The commitment hash</span>
+        <span class="f">src/lib/commit.ts · app/seal/[code]/seal-client.tsx</span></span></div>
+      <div class="step"><span class="n">04</span><span><span class="t">Seal, then wait</span>
+        <span class="f">app/waiting/[code]/waiting-client.tsx · src/lib/db.ts</span></span></div>
+      <div class="step"><span class="n">05</span><span><span class="t">Measure, compose, destroy the words</span>
+        <span class="f">app/api/reveal/route.ts → src/lib/derive.ts → src/lib/compose.ts → storeRevealAndShred</span></span></div>
+      <div class="step"><span class="n">06</span><span><span class="t">The page</span>
+        <span class="f">app/reveal/[code]/reveal-client.tsx</span></span></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="m">The three files that matter</p>
+    <h2>If you only read three things</h2>
+    <table>
+      <tr><th>File</th><th>Why</th></tr>
+      <tr><td class="f">src/lib/compose.ts</td><td class="d">Every sentence on the reveal. It has no imports and no I/O — numbers go in, English comes out. All the product's voice is in this one file.</td></tr>
+      <tr><td class="f">src/lib/questions.ts</td><td class="d">The measurements, each phrased as the exact claim it licenses, with the calibration evidence in the comments.</td></tr>
+      <tr><td class="f">src/lib/db.ts</td><td class="d">The privacy claim lives in <code>storeRevealAndShred</code>: it writes the page and clears both answer sets in one transaction.</td></tr>
+    </table>
+    <div class="note">
+      <p><strong>The practice worth reusing:</strong> before shipping a product that says something sensitive about someone, write the part that makes the promise <em>structurally</em> true — then check it from outside. Here that check is <code>pnpm e2e</code>, which drives the real app over HTTP and then reads the database directly to confirm both people's answers are gone. "We don't store it" is a claim; <code>raw_answers = NULL</code> is a fact.</p>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div>
+      <p class="m">Prove it yourself</p>
+      <h2>Three commands</h2>
+      <ul>
+        <li><code>pnpm seed</code> — the pipeline on a real pair, then three controls that must come back silent. If the aligned pair ever produces a finding, the thresholds have drifted and the product is making claims it should not.</li>
+        <li><code>pnpm e2e</code> — the full loop over HTTP, ending in a direct read of the database.</li>
+        <li><code>pnpm demo</code> — the demonstration control: change one answer, watch a finding disappear.</li>
+      </ul>
+    </div>
+    <div>
+      <p class="m">The one thing to be careful with</p>
+      <h2>Thresholds are measured, not guessed</h2>
+      <p>0.65 for "strong enough to show", and a movement also needs real confidence in the answer. Those numbers came from running four written pairs, not from taste. They are recorded in <code>questions.ts</code> with the values they were set from.</p>
+      <p>If you change a question, re-run <code>pnpm seed</code> and read the controls before believing it.</p>
+      <p style="margin-top:1rem">
+        <span class="badge">no llm</span><span class="badge">no bank connections</span>
+        <span class="badge">no accounts</span><span class="badge">words deleted</span>
+      </p>
+    </div>
+  </section>
+
+  <footer>Ours · built with the Devpost Learn Skill Pack · planning in devpost/scope.md, prd.md, spec.md, checklist.md</footer>
+
+</div>
+</body>
+</html>

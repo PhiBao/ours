@@ -10,7 +10,8 @@
     "seed": "tsx scripts/seed.ts",
     "capture": "node demo/capture.mjs",
     "typecheck": "tsc --noEmit",
-    "e2e": "node scripts/e2e.mjs"
+    "e2e": "node scripts/e2e.mjs",
+    "demo": "node demo/video.mjs"
   },
   "dependencies": {
     "next": "^15.1.0",
