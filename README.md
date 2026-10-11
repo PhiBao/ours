@@ -175,17 +175,41 @@ each person. The second submission builds the page.
 |---|---|
 | `pnpm seed` | The pipeline on a real pair, then three controls that must come back silent |
 | `pnpm e2e` | The full loop over HTTP, ending in a direct read of the database |
+| `pnpm e2e:live` | The same loop against the deployed URL, verified through the API |
 | `pnpm capture` | Regenerates the screenshots above |
 | `pnpm typecheck` | `tsc --noEmit` |
+| `pnpm deploy` | Builds and deploys to Cloudflare Workers |
 
-**Stack:** Next.js 15 (App Router) · TypeScript · Tailwind v4 · Node 22 `node:sqlite` ·
+**Live:** <https://ours.kiter0211.workers.dev> — open it in two different browsers, or a
+normal and a private window.
+
+**Stack:** Next.js 15 (App Router) · TypeScript · Tailwind v4 · Cloudflare Workers + D1 ·
 TypeSafe System One · Playwright. `pnpm install` compiles nothing.
+
+### One store, two drivers
+
+`src/lib/db.ts` is written against a single small interface. Which driver runs is decided in
+one place:
+
+- **locally** — Node 22's built-in `node:sqlite`, one file at `data/ours.db`, nothing to
+  install and nothing to run
+- **deployed** — Cloudflare D1, through the `DB` binding in `wrangler.jsonc`
+
+The SQL is identical in both, so every route above the store is unaware of which is running.
+D1's `batch()` is atomic, which is what `storeRevealAndShred` wants: the finished page and the
+deletion of both people's words land together or not at all.
+
+The local driver is not a stand-in for a real deployment and is not presented as one. A file
+does not survive between serverless invocations, so the deployed build has to bind a database,
+and it does.
 
 ## What is real, and what isn't
 
-- Every measurement is a real call against the TypeSafe API. Responses are cached on disk
-  keyed by a hash of the request, so a second run of any script makes no network call and
-  produces identical numbers — the demo video can be recorded with the network switched off.
+- Every measurement is a real call against the TypeSafe API. Locally, responses are cached on
+  disk keyed by a hash of the request, so a second run of any script makes no network call
+  and produces identical numbers — the demo video can be recorded with the network switched
+  off. Workers has no writable filesystem, so the cache switches itself off there rather than
+  failing a request; every deployed number is a live call.
 - The commitment hash is tamper-evidence for the person who wrote the answers: it proves what
   arrived is what they sent, and that it cannot be quietly rewritten. It is **not** a
   zero-knowledge proof against a hostile server, and the product does not claim it is.

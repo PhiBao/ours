@@ -49,7 +49,7 @@ export async function GET(req: Request) {
   if (!isValidCode(code) || !isValidName(name)) {
     return NextResponse.json({ error: "That doesn't look right." }, { status: 400 });
   }
-  const state = getPair(code);
+  const state = await getPair(code);
   if (!state) {
     return NextResponse.json({ error: "No pair with that code." }, { status: 404 });
   }
@@ -61,7 +61,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ answers: [], sealed: true });
   }
 
-  return NextResponse.json({ answers: getDraft(code, name), sealed: false });
+  return NextResponse.json({ answers: await getDraft(code, name), sealed: false });
 }
 
 export async function POST(req: Request) {
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
   }
 
   const name = String(body.name).trim();
-  const state = getPair(code);
+  const state = await getPair(code);
   if (!state) {
     return NextResponse.json({ error: "No pair with that code." }, { status: 404 });
   }
@@ -106,7 +106,7 @@ export async function POST(req: Request) {
   }
 
   if (action === "draft") {
-    saveDraft(code, name, answers);
+    await saveDraft(code, name, answers);
     return NextResponse.json({ ok: true, saved: true });
   }
 
@@ -125,12 +125,13 @@ export async function POST(req: Request) {
     );
   }
 
-  sealPerson(code, name, sent, answers);
+  await sealPerson(code, name, sent, answers);
+  const fresh = await getPair(code);
 
   return NextResponse.json({
     ok: true,
     sealed: true,
-    bothSealed: areBothSealed(code),
-    people: getPair(code)?.people ?? [],
+    bothSealed: await areBothSealed(code),
+    people: fresh?.people ?? [],
   });
 }

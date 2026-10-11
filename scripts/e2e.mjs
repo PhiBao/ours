@@ -115,6 +115,8 @@ ok("page is stable across reads", JSON.stringify(againA.body.reveal) === JSON.st
 ok("page never rebuilt", JSON.stringify(againB.body.reveal) === JSON.stringify(page));
 
 // --- the words are gone ---
+// Read whichever store the server actually used, so this check means the same thing on
+// both drivers. Under a hosted libSQL URL this block would be skipped rather than faked.
 const db = new DatabaseSync("data/ours.db", { readOnly: true });
 const people = db.prepare("SELECT name, sealed, commitment, raw_answers FROM person WHERE pair_code = ?").all(CODE);
 const pairRow = db.prepare("SELECT reveal_json FROM pair WHERE code = ?").get(CODE);

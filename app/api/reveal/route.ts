@@ -37,11 +37,11 @@ export async function POST(req: Request) {
   }
 
   if (typeof body.mark === "boolean") {
-    markTalked(code, body.mark);
+    await markTalked(code, body.mark);
     return NextResponse.json({ ok: true });
   }
 
-  const state = getPair(code);
+  const state = await getPair(code);
   if (!state) {
     return NextResponse.json({ error: "No pair with that code." }, { status: 404 });
   }
@@ -51,11 +51,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ reveal: state.reveal });
   }
 
-  if (!areBothSealed(code)) {
+  if (!await areBothSealed(code)) {
     return NextResponse.json({ waiting: true, people: state.people });
   }
 
-  const sealed = readSealedAnswers(code);
+  const sealed = await readSealedAnswers(code);
   if (!sealed) {
     return NextResponse.json({ waiting: true, people: state.people });
   }
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
       { name: sealed.b.name, answers: sealed.b.answers },
     );
     const reveal = compose(measurements, { a: sealed.a.name, b: sealed.b.name });
-    storeRevealAndShred(code, reveal);
+    await storeRevealAndShred(code, reveal);
     return NextResponse.json({ reveal });
   } catch (err) {
     if (err instanceof TypesafeError) {

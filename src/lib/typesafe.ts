@@ -104,10 +104,32 @@ function readCache(hash: string): unknown | undefined {
   }
 }
 
+/**
+ * Cache writing must never be able to fail a request. On the Workers runtime there is no
+ * writable filesystem, and an unguarded `mkdirSync` here threw outside every error handler —
+ * turning a working model call into a bare 500 with an empty body.
+ *
+ * So: never throw, and remember that caching is unavailable so we stop trying.
+ */
+let cacheWritable = true;
+
 function writeCache(hash: string, value: unknown): void {
-  const path = cachePath(hash);
-  mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, JSON.stringify(value, null, 2));
+  if (!cacheWritable || !cacheEnabled()) return;
+  try {
+    const path = cachePath(hash);
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, JSON.stringify(value, null, 2));
+  } catch {
+    cacheWritable = false;
+    console.warn(
+      "TypeSafe response cache is not writable here; continuing without it. Set TYPESAFE_CACHE=1 to force it on locally.",
+    );
+  }
+}
+
+/** On by default, so local runs and the demo recording are reproducible and offline-safe. */
+function cacheEnabled(): boolean {
+  return process.env.TYPESAFE_CACHE !== "0";
 }
 
 /* ------------------------------------------------------------------ the call */
@@ -136,7 +158,7 @@ export async function evaluate(
   const hash = requestHash(body);
   const fresh = process.env.TYPESAFE_FRESH === "1";
 
-  if (!fresh) {
+  if (!fresh && cacheEnabled()) {
     const hit = readCache(hash);
     if (hit) {
       const parsed = responseSchema.safeParse(hit);

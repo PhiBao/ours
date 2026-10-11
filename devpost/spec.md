@@ -76,7 +76,7 @@ survivable — the words were never shared in the first place, so there is nothi
 |---|---|---|
 | **Next.js 15**, App Router, TypeScript | One project that serves both the pages and the small API, so the TypeSafe key can stay on the server and never reach the browser. | More framework than a static page would need. Accepted because the privacy requirement is enforced by the server, and a static site cannot enforce it. |
 | **Tailwind CSS v4** | Styling is almost entirely type, spacing, and colour, so a utility framework is more than enough. Design lives in one place. | The look leans on custom type scale and colour tokens rather than component defaults. |
-| **Node's built-in `node:sqlite`** | The data is small, temporary by design, and partly *meant* to be deleted. A file is the honest representation of that — and it ships with Node 22, so there is no native module to compile. | Single-process only, and still marked experimental in Node 22. Fine for a proof of concept; a real version would need a hosted database. |
+| **One store, two drivers: `node:sqlite` locally, Cloudflare D1 deployed** | The data is small, temporary by design, and partly *meant* to be deleted — so locally a single file is the honest representation of it, with no native module to compile. A file cannot survive between serverless invocations, so the deployed build binds D1 instead. `src/lib/db.ts` hides the difference behind one small interface and D1's atomic `batch()` strengthens the shred transaction. | Two code paths for the store to keep correct. Accepted because the alternative was shipping a local file that silently cannot work in production. |
 | **TypeSafe (`jev-latest`)** via plain `fetch` | The product needs calibrated numbers, not generated text. This is the whole reason the architecture is shaped this way. | A young, single-provider dependency. Mitigated by a response cache — see **Failure Modes**. |
 | **Zod** for validating model output | The model returns typed data we then act on. Validating before use means a malformed response degrades instead of producing a wrong claim on the reveal. | One more dependency, bought deliberately: this is the boundary where a bad response would become a false statement about someone's relationship. |
 
@@ -99,10 +99,17 @@ that looks like every other AI product.
   second submission builds the page.
 - **For the demo recording:** `pnpm demo` runs the seeded pair end to end, which is what
   gets recorded. See **Failure Modes** for why this exists.
-- **Submission requires** the demo video *and* a public repository. Deployment is optional
-  and is not a substitute for either. Target if deployed: Vercel, with the key in project
-  settings. `node:sqlite` is single-process, so hosting would mean a hosted database or Turso;
-  noted as a known step, not planned for this proof of concept.
+- **Submission requires** the demo video *and* a public repository; deployment is not required
+  and is not a substitute for either. It is deployed anyway, because "here is the live thing"
+  costs a reviewer nothing and argues for the product: **<https://ours.kiter0211.workers.dev>**
+  on Cloudflare Workers with D1 bound and the TypeSafe key held as a Worker secret.
+- **The deployed build is verified, not assumed.** `pnpm e2e:live` runs the whole loop against
+  the live URL — join, seal, tampered-hash rejection, reveal, page stability, deletion — and
+  the privacy claim was additionally confirmed by reading D1 directly: both rows `sealed=1`,
+  `raw_answers IS NULL`, both commitment hashes retained.
+- **Latency note:** from the build machine, edge round-trips measured 0.25s–5.7s. Remote test
+  timeouts are scaled accordingly (`demo/fixes.mjs`) and transport failures are retried, so a
+  slow edge node is never reported as a broken app.
 
 ## Look and Feel
 
@@ -182,8 +189,8 @@ PRD ref: `prd.md > Proving it is real`.
 
 ## Data Model
 
-Three tables in one SQLite file. Storing so little is a product decision, not laziness —
-raw words are deleted by design.
+Three tables. Storing so little is a product decision, not laziness — raw words are deleted by
+design. In a SQLite file locally, in D1 when deployed.
 
 ```
 pair
@@ -287,8 +294,10 @@ Deliberately not used: any LLM, any bank API, any auth provider, any analytics.
 
 ## What Was Simplified and Why
 
-- **One SQLite file instead of a hosted database** — the data is small and is meant to be
-  deleted. A real version needs Postgres and a job queue; neither helps prove the kernel.
+- **A relational store with no scale story** — three tables, one file locally and one D1
+  database deployed, both behind a small interface so swapping either is a contained change.
+  The data is small and is meant to be deleted. A real version would want Postgres and a job
+  queue; neither helps prove the kernel.
 - **Derivation runs on the request, not in a queue** — a real version would need background
   work, retries, and a status machine. At ~1 second, the request path is the honest choice.
 - **The reveal is generated once and frozen** — no history, no re-derivation, no versioning.
@@ -321,8 +330,11 @@ Deliberately not used: any LLM, any bank API, any auth provider, any analytics.
   itself across runs, while the narrow one returned 0.89 against a 0.05 control. That
   contrast is the lesson, and `5-build` should walk the founder through those two responses
   side by side as the app's first build step.
-- **To verify early in the build:** TypeSafe plan limits and cost on this key; that
-  `node:sqlite` behaves as expected under Next.js's server runtime on this Node 22.
+- **To verify early in the build:** TypeSafe plan limits and cost on this key; that `node:sqlite`
+  behaves as expected under Next.js's server runtime on this Node 22. Both confirmed during
+  `6-ship`. Deployment itself then turned up two real defects, recorded in `checklist.md`:
+  the binding lookup silently falling back to a file driver that cannot work on Workers, and
+  an unguarded cache write throwing on a filesystem-free runtime.
 - **Open, carried from `prd.md > Open Questions`:** none blocking. Threshold calibration
   should be re-checked against fresh written pairs rather than trusted from the four used
   so far.

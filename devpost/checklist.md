@@ -124,4 +124,36 @@ Activity mode:
   context. It still clears the 0.65 threshold, but by 0.05 rather than 0.23. Recorded
   rather than papered over: if this number ever falls below the bar, the page quietly
   loses a movement. The cache makes the recording deterministic, so the demo itself is not
-  at risk; the honest fix, if needed, is to ask this one question in its own request.
+  at risk; the honest fix, if needed, is to ask this one question in its own request.- **Deployment target changed from Vercel to Cloudflare Workers during `6-ship`,** after
+  checking what was actually authenticated. Wrangler's account was live and provisioned a D1
+  database immediately, while a hosted SQL database on Vercel (Turso or Neon) needed a browser
+  signup. That mattered for more than convenience: D1's `batch()` is atomic, which is a
+  *stronger* guarantee for `storeRevealAndShred` than the manual transaction the local file
+  driver has to do. Spec updated to match.
+- **The store grew a second driver, then lost a third.** An interim libSQL/Turso driver was
+  written and tested locally while the deployment target was still undecided. Once D1 was
+  confirmed it was redundant — three drivers for two environments is complexity with no
+  buyer — and it also broke the Workers build by failing to resolve in the bundle. Removed,
+  along with the dependency.
+- **The D1 binding lookup silently fell back to a file driver.** OpenNext does not put
+  bindings on `globalThis.env`, and a `try/catch` around a *dynamic* import of the adapter
+  was swallowing the failure. The app then constructed the local file driver, which cannot
+  write on Workers, so every API route returned a bare 500 with an empty body. Fixed by
+  importing the accessor statically, adding the
+  `nodejs_compat_populate_process_env` flag, and — the part that actually matters — replacing
+  the silent fallback with a loud failure. A misconfiguration should never again present as
+  an unexplained 500.
+- **A stale `.next` cache deployed code that had already been fixed,** and made a solved bug
+  look unsolved for two deploy cycles. Diagnosed by checking whether a newly added diagnostic
+  route appeared in the build output at all. Builds are now clean.
+- **The response cache could fail a request.** It writes to disk, and Workers has no writable
+  filesystem, so an unguarded `mkdirSync` threw outside every error handler and turned a
+  working model call into a 500. A cache is a performance optimisation and must never be able
+  to break correctness, so the write can no longer throw and caching disables itself where it
+  is unavailable. Locally it still works, which is what keeps the demo recording deterministic.
+- **The live test was failing for reasons that were not the app.** Three separate times, a
+  failure traced to the test rather than the product: pair codes generated at the wrong
+  length, a code that collided with the previous run's pair, and an 8-second selector timeout
+  losing to measured edge latency of 0.25–5.7s. Timeouts are now scaled for remote runs and
+  transport failures are retried. Worth recording plainly: three red test runs in a row, all
+  mine, none of them a defect in the product.

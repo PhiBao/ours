@@ -3,6 +3,12 @@ import { chromium } from "playwright";
 import { createHash } from "node:crypto";
 
 const BASE = process.env.BASE ?? "http://localhost:3000";
+
+// Locally a selector appears in well under a second. Against the deployed Worker the same
+// selector was measured between 0.25s and 5.7s, which an 8s budget loses to about half the
+// time — so a flaky edge was being reported as a broken product. Generous when remote.
+const LOCAL = BASE.includes("localhost") || BASE.includes("127.0.0.1");
+const T = (ms) => (LOCAL ? ms : ms * 5);
 const sha = (c, a) => createHash("sha256").update(JSON.stringify({ code: c, answers: a })).digest("hex");
 const api = async (p, b) => {
   const r = await fetch(`${BASE}${p}`, {
@@ -46,14 +52,14 @@ console.log("\n=== 1. creating a pair now tells you what it is ===");
 await page.goto(`${BASE}/`);
 await page.fill("#name", "Maya");
 await page.click('button:has-text("start a new pair")');
-await page.waitForSelector("[data-pair-code]", { timeout: 8000 });
+await page.waitForSelector("[data-pair-code]", { timeout: T(8000) });
 const newCode = (await page.locator("[data-pair-code]").innerText()).trim();
 ok("code shown on its own screen", /^[A-Z0-9]{6}$/.test(newCode), newCode);
 ok("tells you to hand it over", /tell them|give them/i.test(await page.locator("body").innerText()));
 
 await page.click('button:has-text("Answer my six questions")');
-await page.waitForSelector("textarea", { timeout: 8000 });   // actually rendered
-await page.waitForTimeout(300);
+await page.waitForSelector("textarea", { timeout: T(8000) });   // actually rendered
+await page.waitForTimeout(LOCAL ? 300 : 1500);
 ok("code visible while answering", (await page.content()).includes(newCode));
 ok("copy link offered while answering", await page.locator('button:has-text("COPY LINK")').count() > 0);
 
@@ -63,7 +69,7 @@ await api("/api/pair", { code: newCode, name: "Sam" });
 await api("/api/answer", { code: newCode, name: "Maya", answers: maya, action: "seal", commitment: sha(newCode, maya) });
 
 await page.goto(`${BASE}/waiting/${newCode}?as=Maya`);
-await page.waitForTimeout(2500);
+await page.waitForTimeout(LOCAL ? 2500 : 6000);
 const wt = await page.locator("body").innerText();
 ok("waiting shows the code", wt.includes(newCode), wt.split("\n")[0]);
 ok("waiting offers to send it", await page.locator('button:has-text("COPY LINK")').count() > 0);
@@ -73,15 +79,15 @@ ok("says it is with them", /with them/i.test(wt), wt.split("\n").filter((l) => /
 console.log("\n=== 3. the follow-up now confirms ===");
 await api("/api/answer", { code: newCode, name: "Sam", answers: sam, action: "seal", commitment: sha(newCode, sam) });
 await page.goto(`${BASE}/reveal/${newCode}?as=Maya`);
-await page.waitForSelector('button:has-text("Not yet")', { timeout: 12000 });
+await page.waitForSelector('button:has-text("Not yet")', { timeout: T(12000) });
 await page.click('button:has-text("Not yet")');
-await page.waitForTimeout(1000);
+await page.waitForTimeout(LOCAL ? 1000 : 3000);
 let body = await page.locator("body").innerText();
 ok("confirmation in words", /RECORDED — NOT YET/.test(body), (body.split("\n").find((l) => /RECORDED/.test(l)) ?? "none"));
 ok("answer visually marked", (await page.locator('button:has-text("Not yet")').evaluate((el) => getComputedStyle(el).color)) !== "rgb(138, 129, 117)");
 
 await page.click('button:has-text("Yes")');
-await page.waitForTimeout(1000);
+await page.waitForTimeout(LOCAL ? 1000 : 3000);
 body = await page.locator("body").innerText();
 ok("switching answer updates it", /RECORDED — YOU TALKED ABOUT IT/.test(body));
 

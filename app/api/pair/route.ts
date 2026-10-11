@@ -26,7 +26,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "That code doesn't look right." }, { status: 400 });
   }
 
-  const state = getPair(code);
+  const state = await getPair(code);
   if (!state) {
     return NextResponse.json({ error: "No pair with that code." }, { status: 404 });
   }
@@ -60,19 +60,19 @@ export async function POST(req: Request) {
   }
 
   const name = String(body.name).trim();
-  const existed = pairExists(code);
+  const existed = await pairExists(code);
   if (existed) {
-    const state = getPair(code);
+    const state = await getPair(code);
     if (state && state.people.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
       return NextResponse.json({ error: "Someone with that name is already here." }, { status: 409 });
     }
   }
 
-  createPair(code);
-  if (!addPerson(code, name)) {
+  await createPair(code);
+  if (!await addPerson(code, name)) {
     return NextResponse.json({ error: "Someone with that name is already here." }, { status: 409 });
   }
-  const state = getPair(code);
+  const state = await getPair(code);
   return NextResponse.json({
     code,
     created: !existed,

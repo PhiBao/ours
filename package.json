@@ -11,7 +11,9 @@
     "capture": "node demo/capture.mjs",
     "typecheck": "tsc --noEmit",
     "e2e": "node scripts/e2e.mjs",
-    "demo": "node demo/video.mjs"
+    "demo": "node demo/video.mjs",
+    "e2e:live": "node scripts/e2e-live.mjs",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
   },
   "dependencies": {
     "next": "^15.1.0",
@@ -20,6 +22,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.10",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
@@ -31,7 +34,8 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "esbuild"
+      "esbuild",
+      "workerd"
     ]
   }
 }
