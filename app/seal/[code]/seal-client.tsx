@@ -102,7 +102,7 @@ export function Seal({ code, name }: { code: string; name: string }) {
         <li className="flex gap-4">
           <span className="measure w-16 shrink-0 pt-1">KEPT</span>
           <span className="text-ink/75">
-            The page you and {name === "Maya" ? "Sam" : "your partner"} will both open.
+            The page you and the other person will both open.
           </span>
         </li>
         <li className="flex gap-4">

@@ -41,10 +41,9 @@ const page = await ctx.newPage();
 const problems = [];
 page.on("pageerror", (e) => problems.push(`pageerror: ${e.message}`));
 
-let n = 0;
-const shot = async () => {
-  n += 1;
-  const name = String(n).padStart(2, "0");
+// Named, not numbered: the README references these, and "07.png" means nothing to
+// anyone reading the repo six months from now.
+const shot = async (name) => {
   await page.screenshot({ path: `${OUT}/${name}.png` });
   return name;
 };
@@ -52,14 +51,14 @@ const shot = async () => {
 console.log("\n--- the whole journey ---");
 await page.goto(`${BASE}/`);
 await page.waitForTimeout(600);
-await shot();
+await shot("01-join");
 
 await page.fill("#name", "Maya");
 await page.click('button:has-text("start a new pair")');
 await page.waitForSelector("[data-pair-code]", { timeout: 10000 });
 await page.waitForTimeout(800);
 const CODE = (await page.locator("[data-pair-code]").innerText()).trim();
-await shot();
+await shot("02-your-code");
 console.log(`  pair: ${CODE}`);
 
 await page.click('button:has-text("Answer my six questions")');
@@ -68,7 +67,7 @@ await page.waitForSelector("textarea", { timeout: 10000 });
 for (let i = 0; i < MAYA.length; i++) {
   await page.fill("textarea", MAYA[i]);
   await page.waitForTimeout(500);
-  if (i === 0) await shot();          // first prompt, typed
+  if (i === 0) await shot("03-answering");          // first prompt, typed
   const last = i === MAYA.length - 1;
   await page.click(last ? 'button:has-text("One last thing")' : 'button:has-text("Next")');
   await page.waitForTimeout(last ? 1200 : 350);
@@ -77,12 +76,12 @@ console.log("  answered all six");
 
 await page.waitForURL(/\/seal\//, { timeout: 15000 });
 await page.waitForTimeout(2000);
-await shot();                          // seal
+await shot("04-the-hash");          // seal
 
 await page.click('button:has-text("Seal my answers")');
 await page.waitForURL(/\/waiting\//, { timeout: 15000 });
 await page.waitForTimeout(2800);
-await shot();                          // waiting
+await shot("05-waiting-for-them");          // waiting
 
 console.log("  the other person answers");
 await api("/api/pair", { code: CODE, name: "Sam" });
@@ -91,15 +90,15 @@ await api("/api/answer", { code: CODE, name: "Sam", answers: SAM, action: "seal"
 
 await page.goto(`${BASE}/reveal/${CODE}?as=Maya`);
 await page.waitForTimeout(5000);
-await shot();                          // reveal — first movement
+await shot("06-reveal-opening");          // reveal
 for (let i = 0; i < 3; i++) {
   await page.evaluate(() => window.scrollBy(0, window.innerHeight * 0.9));
   await page.waitForTimeout(1100);
-  await shot();
+  await shot(`07-reveal-${i + 1}`);
 }
 await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 await page.waitForTimeout(1000);
-await shot();                          // the next step
+await shot("08-the-one-thing");          // the next step
 
 // an expanded finding, showing the number and her own words
 await page.evaluate(() => window.scrollTo(0, 0));
@@ -108,26 +107,26 @@ const why = page.locator('button:has-text("WHY WE THINK SO")').first();
 if (await why.count()) {
   await why.click();
   await page.waitForTimeout(900);
-  await shot();
+  await shot("09-why-we-think-so");
 }
 
 await page.click('button:has-text("Not yet")');
 await page.waitForTimeout(1000);
 await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 await page.waitForTimeout(600);
-await shot();                          // follow-up
+await shot("10-what-happened");          // follow-up
 
 await page.goto(`${BASE}/demo`);
 await page.waitForTimeout(2500);
-await shot();                          // control
+await shot("11-control-the-target-pair");          // the default variant
 await page.click('button:has-text("The same pair, one answer changed")');
 await page.waitForTimeout(2600);
-await shot();                          // one answer changed
+await shot("12-control-one-answer-changed");          // change one answer
 await page.click('button:has-text("A pair who agree, and say so")');
 await page.waitForTimeout(2600);
-await shot();                          // the empty page
+await shot("13-control-nothing-to-stand-behind");          // a pair who agree
 
-console.log(`\n  ${n} screenshots in ${OUT}/`);
+console.log(`\n  screenshots in ${OUT}/`);
 console.log("=== errors ===");
 console.log(problems.length ? problems.join("\n") : "none");
 await browser.close();

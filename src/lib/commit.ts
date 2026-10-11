@@ -23,7 +23,10 @@ export async function commitment(code: string, answers: string[]): Promise<strin
     .join("");
 }
 
-/** First twelve characters, grouped, for showing on screen. */
+/**
+ * First sixteen characters, grouped in fours. Four was not enough to look like a
+ * commitment next to copy that promises you can check your words arrived unchanged.
+ */
 export function shortHash(hash: string): string {
-  return hash.slice(0, 4).replace(/(.{4})/g, "$1 ").trim();
+  return hash.slice(0, 16).replace(/(.{4})(?=.)/g, "$1 ").trim();
 }
