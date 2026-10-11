@@ -22,6 +22,7 @@ export function Reveal({ code, name }: { code: string; name: string }) {
   const [open, setOpen] = useState<string | null>(null);
   const [ownWords, setOwnWords] = useState<string[]>([]);
   const [talked, setTalked] = useState<boolean | null>(null);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -67,11 +68,18 @@ export function Reveal({ code, name }: { code: string; name: string }) {
 
   async function mark(value: boolean) {
     setTalked(value);
-    await fetch("/api/reveal", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code, mark: value }),
-    }).catch(() => {});
+    setSaved(false);
+    try {
+      const res = await fetch("/api/reveal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, mark: value }),
+      });
+      const data = await res.json();
+      setSaved(res.ok && data.ok === true);
+    } catch {
+      setSaved(false);
+    }
   }
 
   if (state === "loading") {
@@ -204,7 +212,7 @@ export function Reveal({ code, name }: { code: string; name: string }) {
         <p className="text-[1.25rem] leading-relaxed max-w-[28rem]">
           Did you end up talking about it?
         </p>
-        <div className="mt-6 flex gap-6">
+        <div className="mt-6 flex flex-wrap items-baseline gap-6">
           {[
             { v: true, label: "Yes" },
             { v: false, label: "Not yet" },
@@ -223,6 +231,17 @@ export function Reveal({ code, name }: { code: string; name: string }) {
               {o.label}
             </button>
           ))}
+
+          {/* Confirmation in words. A colour change on underlined text reads as nothing. */}
+          {talked !== null ? (
+            <p role="status" className="measure">
+              {saved
+                ? talked
+                  ? "RECORDED — YOU TALKED ABOUT IT"
+                  : "RECORDED — NOT YET"
+                : "COULDN'T SAVE THAT. TRY AGAIN."}
+            </p>
+          ) : null}
         </div>
       </section>
 

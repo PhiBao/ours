@@ -17,6 +17,7 @@ export default function Join() {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [created, setCreated] = useState<string | null>(null);
 
   async function join(e?: React.FormEvent, overrideCode?: string) {
     e?.preventDefault();
@@ -36,6 +37,13 @@ export default function Join() {
         setBusy(false);
         return;
       }
+      // Creating a pair is a distinct moment: from here on the person has something they
+      // have to hand to somebody else, so they need to see it and be able to send it.
+      if (data.created) {
+        setCreated(c);
+        setBusy(false);
+        return;
+      }
       router.push(`/answer/${c}?as=${encodeURIComponent(name.trim())}`);
     } catch {
       setError("Couldn't reach the server.");
@@ -49,6 +57,60 @@ export default function Join() {
     void join(undefined, c);
   }
 
+  // ------------------------------------------------------------------ just created
+  // Shown instead of the form. This is the only place the code is ever generated, so it
+  // is the only place a person can learn it before they send someone else into it.
+  if (created) {
+    return (
+      <main className="min-h-[calc(100vh-8.5rem)] flex flex-col">
+        <p className="measure">YOUR PAIR</p>
+
+        <h1 className="mt-6 text-[2rem] leading-[1.25] font-light max-w-[30rem]">
+          Tell them this code.
+        </h1>
+
+        <p
+          data-pair-code={created}
+          className="measure mt-8 text-[2.5rem] tracking-[0.2em] text-ink"
+        >
+          {created}
+        </p>
+
+        <p className="mt-8 text-ink/75 max-w-[30rem] leading-relaxed">
+          Nothing happens until they join with it and answer their six questions. Then you
+          both open the same page. Send it to them now, or keep it — the link below goes
+          straight there.
+        </p>
+
+        <p className="measure mt-6 leading-relaxed">
+          {`${typeof window !== "undefined" ? window.location.origin : ""}/answer/${created}`}
+        </p>
+
+        <div className="flex-1" />
+
+        <div className="flex items-center justify-between pt-8 border-t border-hairline">
+          <button
+            type="button"
+            onClick={() => setCreated(null)}
+            className="text-muted text-[0.95rem] underline decoration-hairline underline-offset-[6px] hover:text-accent transition-colors"
+          >
+            start over
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              router.push(`/answer/${created}?as=${encodeURIComponent(name.trim())}`)
+            }
+            className="text-[1.0625rem] underline decoration-hairline underline-offset-[6px] hover:decoration-accent transition-colors"
+          >
+            Answer my six questions
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  // ------------------------------------------------------------------ join form
   return (
     <main>
       <h1 className="text-[2.75rem] leading-none font-light tracking-tight">Ours</h1>
@@ -124,6 +186,12 @@ export default function Join() {
             start a new pair
           </button>
         </div>
+
+        {code.length === 6 && !busy ? (
+          <p className="measure">
+            JOINING {code} AS {name.trim() ? name.trim().toUpperCase() : "—"}
+          </p>
+        ) : null}
       </form>
 
       <p className="measure mt-14 max-w-[26rem] leading-relaxed">

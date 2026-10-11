@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PROMPTS } from "@/lib/questions";
+import { PairBadge } from "@/ui/pair-badge";
 
 /**
  * Six prompts, one at a time, in your own words.
@@ -189,9 +190,12 @@ export function Answer({ code, name }: { code: string; name: string }) {
         </div>
       </div>
 
-      <p className="measure mt-8 leading-relaxed">
-        {answered} OF {PROMPTS.length} ANSWERED · NOBODY SEES THIS UNTIL YOU BOTH FINISH
-      </p>
+      <div className="mt-8 flex flex-wrap items-baseline gap-x-6 gap-y-2">
+        <p className="measure">
+          {answered} OF {PROMPTS.length} ANSWERED · NOBODY SEES THIS UNTIL YOU BOTH FINISH
+        </p>
+        <PairBadge code={code} name={name} />
+      </div>
     </main>
   );
 }

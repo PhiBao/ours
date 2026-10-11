@@ -32,7 +32,7 @@ feedback, and both are kept.
   Learner check: Open the site in a normal window and a private window, join both with one code, and answer. Tell me what the waiting screen felt like and whether the seal screen made you trust it.
   Commit: `Join, answer, seal, and wait — the entry loop end to end`
 
-- [ ] **3. The reveal, and the deletion that makes it true**
+- [x] **3. The reveal, and the deletion that makes it true**
   Becomes usable: When the second person seals, the page is derived, the raw answers are deleted, and both people opening the reveal see the same letter — including the honest short page when nothing clears the bar.
   Why now: This is the payoff, and it is the slice where the privacy claim becomes real rather than intended. It also has the most interesting failure state in the product.
   PRD ref: `prd.md > The reveal`, `prd.md > States and Boundaries`
@@ -93,6 +93,15 @@ Activity mode:
 - **Drafts were being rejected because the server required all six answers before saving.**
   Drafts save on every keystroke, so they arrive at whatever length the person has reached;
   the handler now pads to six and only demands a complete set at seal time.
+- **The pair code was never surfaced anywhere after creating a pair.** The PRD's core
+  journey says two people join the same code, but the app generated one and then never
+  showed it to anybody — so creating a pair was indistinguishable from joining one, and
+  there was no way to hand the code to a partner. Found by the founder using the app, not
+  by any check. Now its own screen on creation, on the answer and waiting screens, with a
+  copy-link action.
+- **The "did you talk about it" follow-up only changed colour.** Clicking a button and
+  watching underlined text shift from grey to ochre reads as nothing having happened. It
+  now confirms in words, and reports failure to save rather than going quiet.
 - **Joining a pair never inserted the person.** `createPair` created the pair row and
   nothing wrote the person, so the second stage of the flow answered 403 for everyone. The
   end-to-end check caught it immediately, which is what it is for.

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { PairBadge } from "@/ui/pair-badge";
 
 type Person = { name: string; sealed: number; commitment: string | null; hasAnswers: boolean };
 
@@ -97,6 +98,14 @@ export function Waiting({ code, name }: { code: string; name: string }) {
           ? "Reading both sets of answers now."
           : "The page is built from both of your answers, so it doesn't exist yet. Come back to this same link — you don't need to do anything else."}
       </p>
+
+      <p className="mt-8 text-ink/75 max-w-[30rem]">
+        Give them the code — or the link — and they go straight to their questions.
+      </p>
+
+      <div className="mt-4">
+        <PairBadge code={code} name={name} />
+      </div>
 
       <div className="mt-10 space-y-3">
         {[me, partner].filter(Boolean).map((p) => (

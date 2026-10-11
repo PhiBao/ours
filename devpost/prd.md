@@ -14,6 +14,10 @@ Source: `scope.md > The Unique Kernel`, `scope.md > The Core Loop`.
 1. **Arrival.** A person lands on one screen. It names the product and asks one question:
    do you have a code from the other person, or do you want to start one. There is no
    account, no sign-up, no tour.
+2a. **Creating a pair ends on its own screen.** Because generating a code the person can
+   never see makes the pair unusable, creation stops on a screen that shows the code, says
+   to give it to the other person, and offers a link that goes straight to their
+   questions. The code then stays visible on the answer and waiting screens.
 
 2. **Getting in.** They enter or create a short pair code. Two people can join the same
    code from different devices. No personal information is requested at any point.
@@ -207,6 +211,9 @@ Two rules learned from that calibration, now product rules rather than engineeri
 ## States and Boundaries
 
 - **First arrival, no code** — the join screen explains both options without jargon.
+- **Just created a pair** — the code is shown and must be sent onward. This state is
+  mandatory: the pair does not exist for anybody until two people hold the code, so a
+  screen that hides it is a broken state, not a convenience.
 - **Partial answers** — returning resumes at the first unanswered prompt; completed marks
   stay visible.
 - **Answers too short to judge** — if either person's answers give the model too little to
