@@ -130,19 +130,32 @@ export function Reveal({ code, name }: { code: string; name: string }) {
   const shown = data.movements;
 
   return (
-    <main>
+    <main className="reveal">
       <div className="flex items-baseline justify-between">
         <p className="measure">{name.toUpperCase()}</p>
         <p className="measure">BOTH OF YOU · {shown.length} FOUND</p>
       </div>
 
+      <header
+        className="mt-16"
+        style={{ animation: "rise 900ms ease-out both", animationDelay: "120ms" }}
+      >
+        <h1 className="text-[2.75rem] leading-[1.05] font-light max-w-[38rem]">
+          Both of you answered.
+        </h1>
+        <p className="mt-6 text-ink/70 max-w-[34rem]">
+          Here is what the two of you actually said, next to each other. Neither of you saw
+          the other&rsquo;s answers.
+        </p>
+      </header>
+
       {data.tooThin ? (
-        <section className="mt-20" style={{ animation: "rise 900ms ease-out both" }}>
+        <section className="mt-24" style={{ animation: "rise 900ms ease-out both" }}>
           <h1 className="text-[2.25rem] leading-[1.15] font-light">{SHORT_PAGE.headline}</h1>
           <p className="mt-6 text-ink/75 leading-relaxed">{SHORT_PAGE.detail}</p>
         </section>
       ) : shown.length === 0 ? (
-        <section className="mt-20" style={{ animation: "rise 900ms ease-out both" }}>
+        <section className="mt-24" style={{ animation: "rise 900ms ease-out both" }}>
           <h1 className="text-[2.25rem] leading-[1.15] font-light">
             Nothing we could stand behind.
           </h1>
@@ -159,10 +172,10 @@ export function Reveal({ code, name }: { code: string; name: string }) {
           return (
             <section
               key={m.id}
-              className="mt-20 min-h-[60vh] flex flex-col justify-center"
+              className="mt-24 min-h-[58vh] flex flex-col justify-center"
               style={{ animation: `rise 1100ms ease-out both`, animationDelay: `${i * 420}ms` }}
             >
-              <h2 className="text-[2.25rem] leading-[1.15] font-light text-accent">{m.headline}</h2>
+              <h2 className="text-[2.375rem] leading-[1.12] font-light text-ink">{m.headline}</h2>
               <p className="mt-6 text-[1.1875rem] leading-relaxed text-ink/80">{m.detail}</p>
 
               <div className="mt-8">
@@ -170,7 +183,7 @@ export function Reveal({ code, name }: { code: string; name: string }) {
                   type="button"
                   onClick={() => setOpen(isOpen ? null : m.id)}
                   aria-expanded={isOpen}
-                  className="measure underline decoration-hairline underline-offset-[4px] hover:decoration-accent transition-colors"
+                  className="measure text-accent underline decoration-hairline underline-offset-[4px] hover:decoration-accent transition-colors"
                 >
                   {isOpen ? "HIDE" : "WHY WE THINK SO"} · {m.number.toFixed(2)}
                 </button>
@@ -200,15 +213,15 @@ export function Reveal({ code, name }: { code: string; name: string }) {
 
       {/* The one next step. Always present. */}
       <section
-        className="mt-20 min-h-[55vh] flex flex-col justify-center border-t border-hairline pt-16"
+        className="mt-24 min-h-[55vh] flex flex-col justify-center border-t border-hairline pt-16"
         style={{ animation: "rise 1100ms ease-out both", animationDelay: `${shown.length * 420}ms` }}
       >
-        <h2 className="measure mb-6">{data.nextStep.headline.toUpperCase()}</h2>
+        <h2 className="measure mb-6 text-accent">{data.nextStep.headline.toUpperCase()}</h2>
         <p className="text-[1.75rem] leading-[1.25] font-light">{data.nextStep.detail}</p>
       </section>
 
       {/* The only follow-up the product asks for. */}
-      <section className="mt-20 pt-16 border-t border-hairline">
+      <section className="mt-24 pt-16 border-t border-hairline">
         <p className="text-[1.25rem] leading-relaxed max-w-[28rem]">
           Did you end up talking about it?
         </p>

@@ -52,7 +52,7 @@ feedback, and both are kept.
   Learner check: Open the control, change one person's answers, and watch which movements vanish. Tell me whether that changed your mind about whether the page is real.
   Commit: `Add per-movement evidence and the demonstration control`
 
-- [ ] **5. Make it look like a product, and make it recordable**
+- [x] **5. Make it look like a product, and make it recordable**
   Becomes usable: The whole app in its intended visual register, with every consequential state designed rather than defaulted, and a script that drives the seeded pair end to end for recording.
   Why now: Design is a judged criterion and the demo is judged from the video alone, so the look and the recording path are both load-bearing rather than cosmetic. Last, because it needs all five screens to exist to be judged as a whole.
   PRD ref: `prd.md > Look and Feel`, `prd.md > Screens and Layout`
@@ -84,6 +84,14 @@ Reflection:
 Activity mode:
 
 ## Revisions
+
+- **Ochre was on every headline, so it meant nothing.** The PRD reserved the accent for
+  movements concerning both people — which is all of them. Re-pointed: headlines and prose
+  are ink, and the accent marks only the machine's contribution (the evidence labels and the
+  one next step). Colour now carries the serif/mono division instead of decorating it.
+- **The reveal had no opening.** It went from a header strip straight into the first
+  finding, so the page arrived mid-thought. Added an opening beat, and widened this one
+  surface to 42rem so a headline reads five words to a line rather than three.
 
 - **The first version of the "one answer changed" demonstration variant did not actually
   change the page.** It moved the numbers but kept all three movements, so the beat it was

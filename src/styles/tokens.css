@@ -25,3 +25,8 @@
   --font-prose: var(--font-source-serif), Georgia, serif;
   --font-measure: var(--font-plex-mono), ui-monospace, monospace;
 }
+/* The reveal reads better with a little more room: at 34rem a 2.25rem headline breaks
+   every three words. Only this surface widens; everything else stays in the column. */
+.reveal {
+  max-width: 42rem;
+}
