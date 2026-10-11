@@ -42,7 +42,7 @@ feedback, and both are kept.
   Learner check: Finish the seeded pair in two windows and read the reveal. Tell me which line landed, which didn't, and whether anything on it felt wrong.
   Commit: `Derive the reveal and delete the raw answers`
 
-- [ ] **4. Show the evidence, and let one answer change**
+- [x] **4. Show the evidence, and let one answer change**
   Becomes usable: Any movement can be expanded to show the number behind it and the reader's own words, and the demonstration control swaps one person's answers so the numbers can be seen moving.
   Why now: This is what turns a claim into evidence, and it is the beat that makes the submission credible rather than assertive. It depends on slice 3 existing.
   PRD ref: `prd.md > Proving it is real`
@@ -84,6 +84,12 @@ Reflection:
 Activity mode:
 
 ## Revisions
+
+- **The first version of the "one answer changed" demonstration variant did not actually
+  change the page.** It moved the numbers but kept all three movements, so the beat it was
+  supposed to demonstrate — one answer changing, one finding disappearing — was invisible.
+  Tuned against the live model until `enjoy_vs_control` drops from 0.85 to 0.09 and the
+  movement disappears while the other two hold.
 
 - **Storage moved from `better-sqlite3` to Node's built-in `node:sqlite`** — the native
   module would not build: pnpm 11 ignored its build script, and its native binding was
