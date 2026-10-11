@@ -1,0 +1,99 @@
+1
+00:00:00,050 --> 00:00:04,035
+Every app about shared money asks one person to go first.
+
+2
+00:00:04,035 --> 00:00:08,971
+Ours asks two people the same six open questions, each answering
+alone.
+
+3
+00:00:08,971 --> 00:00:11,653
+Neither of you ever sees what the other wrote.
+
+4
+00:00:12,210 --> 00:00:16,260
+That is only worth doing if the answer is measured rather than
+guessed.
+
+5
+00:00:16,260 --> 00:00:23,018
+So every sentence on the page has to clear a number the model
+returned, and there are controls that have to stay silent.
+
+6
+00:00:23,580 --> 00:00:26,928
+Maya gets a code to hand over, and then six questions.
+
+7
+00:00:26,928 --> 00:00:28,582
+What does money feel like to her.
+
+8
+00:00:28,582 --> 00:00:30,730
+Whether he notices what things cost.
+
+9
+00:00:30,730 --> 00:00:33,073
+Whether she has ever said so out loud.
+
+10
+00:00:33,649 --> 00:00:36,515
+Before she seals them, she sees the hash.
+
+11
+00:00:36,515 --> 00:00:41,751
+So she can check that what arrived is what she sent, and that nobody
+quietly rewrote it.
+
+12
+00:00:42,329 --> 00:00:43,100
+Sealed.
+
+13
+00:00:43,100 --> 00:00:44,350
+It is with him now.
+
+14
+00:00:44,350 --> 00:00:48,582
+And because the page is built from both of them, it does not exist
+yet.
+
+15
+00:00:48,582 --> 00:00:50,066
+There is nothing to look at.
+
+16
+00:00:50,629 --> 00:00:52,219
+Sam answers the same way.
+
+17
+00:00:52,219 --> 00:00:57,440
+And now the page exists, for both of them, at once, saying the same
+thing.
+
+18
+00:00:57,440 --> 00:00:59,368
+You are both carrying it alone.
+
+19
+00:00:59,368 --> 00:01:01,750
+Neither of you had ever said that out loud.
+
+20
+00:01:03,319 --> 00:01:04,688
+And it is not a script.
+
+21
+00:01:04,688 --> 00:01:11,316
+Change one of her six answers, and the finding that depended on it is
+withheld, while the other two still stand.
+
+22
+00:01:14,279 --> 00:01:17,887
+Nobody goes first, so nobody can be wrong first.
+
+23
+00:01:17,887 --> 00:01:20,244
+Ours is live and open source.
+
